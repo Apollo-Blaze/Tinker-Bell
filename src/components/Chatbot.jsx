@@ -10,42 +10,55 @@ const ChatBot = () => {
   const [typingMessage, setTypingMessage] = useState(""); // Message being typed out
   const [botMessage, setBotMessage] = useState(""); // Persisted final message
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
 
     setInput(""); // Clear the input field
     setIsBotResponding(true); // Start bot response animation
     setTypingMessage(""); // Clear any previous typing message
 
-    const botResponses = [
-      "That's lovely! Christmas really is magical.",
-      "I hope Santa visits you this yearI hope Santa visits you this yearI hope Santa visits you this yearI hope Santa visits you this yearI hope Santa visits you this yearI hope Santa visits you this yearI hope Santa visits you this year!",
-      "Do you like Christmas carols?",
-      "The Christmas lights are so beautiful, aren't they?",
-      "Merry Christmas!",
-    ];
-    const randomResponse =
-      botResponses[Math.floor(Math.random() * botResponses.length)];
+    try {
+      // Send user input to the backend
+      const response = await fetch("http://localhost:3000/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userInput: input }),
+      });
 
-    let currentIndex = 0;
-
-    const typeMessage = () => {
-      if (currentIndex < randomResponse.length) {
-        setTypingMessage(randomResponse.substring(0, currentIndex + 1));
-        currentIndex++;
-      } else {
-        clearInterval(typingInterval);
-        setBotMessage(randomResponse); // Set the final bot message
-        setTypingMessage(""); // Clear the typing message
-        setIsBotResponding(false); // Stop bot response animation
+      if (!response.ok) {
+        throw new Error("Failed to fetch response from the server");
       }
-    };
 
-    // Start typing effect
-    const typingInterval = setInterval(typeMessage, 100);
+      const data = await response.json();
 
-    // Cleanup interval if component unmounts
-    return () => clearInterval(typingInterval);
+      const botResponse = data.reply || "Sorry, Santa couldn't respond.";
+
+      let currentIndex = 0;
+
+      const typeMessage = () => {
+        if (currentIndex < botResponse.length) {
+          setTypingMessage(botResponse.substring(0, currentIndex + 1));
+          currentIndex++;
+        } else {
+          clearInterval(typingInterval);
+          setBotMessage(botResponse); // Set the final bot message
+          setTypingMessage(""); // Clear the typing message
+          setIsBotResponding(false); // Stop bot response animation
+        }
+      };
+
+      // Start typing effect
+      const typingInterval = setInterval(typeMessage, 100);
+
+      // Cleanup interval if component unmounts
+      return () => clearInterval(typingInterval);
+    } catch (error) {
+      console.error("Error:", error.message);
+      setBotMessage("Oops! Santa is having trouble responding.");
+      setIsBotResponding(false);
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -66,15 +79,15 @@ const ChatBot = () => {
   return (
     <div className="chat-container">
       <div>
-      <div className="animation-container flex justify-center items-center">
-        <Lottie options={defaultOptions} height={400} width={400} />
-      </div>
-
-      <div className="messages mb-2">
-        <div className="bot-message">
-          {isBotResponding ? typingMessage : botMessage}
+        <div className="animation-container flex justify-center items-center">
+          <Lottie options={defaultOptions} height={400} width={400} />
         </div>
-      </div>
+
+        <div className="messages mb-2">
+          <div className="bot-message">
+            {isBotResponding ? typingMessage : botMessage}
+          </div>
+        </div>
       </div>
 
       <div className="input-container flex flex-col justify-between items-center p-4 bg-yellow-500 rounded-2xl">
