@@ -99,7 +99,6 @@ body {
 h1 {
   font-size: 2.5rem;
   color: #fff7e6;
-  text-shadow: 2px 2px 4px #000;
 }
 
 .navbar {
@@ -108,11 +107,10 @@ h1 {
   left: 0;
   right: 0;
   width: 100%;
-  background-color: #077e35; /* Blue color */
+  background-color: #dd2121da; /* Blue color */
   color: white;
   padding: 1rem 0;
   z-index: 50;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds shadow */
 }
 
 /* Center the navbar heading */
@@ -121,7 +119,7 @@ h1 {
   font-weight: bold;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 main {
@@ -133,9 +131,9 @@ main {
 }
 
 .chat-container {
-  background: #910000c6;
+  background: #91000000;
   border-radius: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.0);
   width: 90%;
   max-width: 1000px;
   padding: 20px;
@@ -204,7 +202,7 @@ button {
   color: white;
   border: none;
   padding: 10px 15px;
-  border-radius: 50px;
+  border-radius: 10px;
   cursor: pointer;
 }
 

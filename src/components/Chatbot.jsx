@@ -18,11 +18,11 @@ const ChatBot = () => {
     setTypingMessage(""); // Clear any previous typing message
 
     const botResponses = [
-      "That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.",
-      "I hope Santa visits you this year!That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.",
-      "Do you like Christmas carols?That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.",
-      "The Christmas lights are so beautiful, aren't they?That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.",
-      "Merry Christmas!That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.",
+      "That's lovely! Christmas really is magical.",
+      "I hope Santa visits you this yearI hope Santa visits you this yearI hope Santa visits you this yearI hope Santa visits you this yearI hope Santa visits you this yearI hope Santa visits you this yearI hope Santa visits you this year!",
+      "Do you like Christmas carols?",
+      "The Christmas lights are so beautiful, aren't they?",
+      "Merry Christmas!",
     ];
     const randomResponse =
       botResponses[Math.floor(Math.random() * botResponses.length)];
@@ -65,24 +65,30 @@ const ChatBot = () => {
 
   return (
     <div className="chat-container">
+      <div>
       <div className="animation-container flex justify-center items-center">
         <Lottie options={defaultOptions} height={400} width={400} />
       </div>
 
-      <div className="messages">
+      <div className="messages mb-2">
         <div className="bot-message">
           {isBotResponding ? typingMessage : botMessage}
         </div>
       </div>
+      </div>
 
-      <div className="input-container flex justify-between items-center p-4">
+      <div className="input-container flex flex-col justify-between items-center p-4 bg-yellow-500 rounded-2xl">
+        <label htmlFor="input" className="text-left text-xl mb-2 text-black font-bold">
+          Ask Santa...
+        </label>
         <input
+          id="input"
           type="text"
           placeholder="Type your message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="w-full border rounded px-4 py-4 mr-2"
+          className="w-full border rounded-2xl px-4 py-4 mb-2"
           disabled={isBotResponding} // Disable input while bot is typing
         />
         <button
