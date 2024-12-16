@@ -1,4 +1,4 @@
-# ChatBot Application
+# Santa-Bot
 
 A chatbot application built with React, featuring dynamic responses powered by the Gemini API. The chatbot provides a seamless user experience with typing animations, smooth scrolling, and engaging Lottie animations.
 
