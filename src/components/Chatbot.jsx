@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import Lottie from "react-lottie";
 import sleepAnimation from "../assets/sleep.json";
 import talkingAnimation from "../assets/talking.json";
@@ -9,15 +9,6 @@ const ChatBot = () => {
   const [isBotResponding, setIsBotResponding] = useState(false);
   const [typingMessage, setTypingMessage] = useState(""); // Message being typed out
   const [botMessage, setBotMessage] = useState(""); // Persisted final message
-  const messagesEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [typingMessage, botMessage]);
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -27,11 +18,11 @@ const ChatBot = () => {
     setTypingMessage(""); // Clear any previous typing message
 
     const botResponses = [
-      "That's lovely! Christmas really is magical.",
-      "I hope Santa visits you this year!",
-      "Do you like Christmas carols?",
-      "The Christmas lights are so beautiful, aren't they?",
-      "Merry Christmas!",
+      "That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.",
+      "I hope Santa visits you this year!That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.",
+      "Do you like Christmas carols?That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.",
+      "The Christmas lights are so beautiful, aren't they?That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.",
+      "Merry Christmas!That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.That's lovely! Christmas really is magical.",
     ];
     const randomResponse =
       botResponses[Math.floor(Math.random() * botResponses.length)];
@@ -40,7 +31,6 @@ const ChatBot = () => {
 
     const typeMessage = () => {
       if (currentIndex < randomResponse.length) {
-        // Use substring to prevent undefined issues
         setTypingMessage(randomResponse.substring(0, currentIndex + 1));
         currentIndex++;
       } else {
@@ -59,7 +49,7 @@ const ChatBot = () => {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !isBotResponding) {
       handleSend();
     }
   };
@@ -80,11 +70,9 @@ const ChatBot = () => {
       </div>
 
       <div className="messages">
-        {/* Show typing message if bot is responding, otherwise show the last message */}
         <div className="bot-message">
           {isBotResponding ? typingMessage : botMessage}
         </div>
-        <div ref={messagesEndRef} />
       </div>
 
       <div className="input-container flex justify-between items-center p-4">
@@ -94,11 +82,13 @@ const ChatBot = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="w-full border rounded px-3 py-2 mr-2"
+          className="w-full border rounded px-4 py-4 mr-2"
+          disabled={isBotResponding} // Disable input while bot is typing
         />
         <button
           onClick={handleSend}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className={`text-white px-4 py-2 ${isBotResponding ? "bg-gray-500 cursor-not-allowed" : "bg-green-600"}`}
+          disabled={isBotResponding || !input.trim()} // Disable button if bot is typing or input is empty
         >
           Send
         </button>

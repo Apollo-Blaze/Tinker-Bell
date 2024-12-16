@@ -102,6 +102,28 @@ h1 {
   text-shadow: 2px 2px 4px #000;
 }
 
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: #077e35; /* Blue color */
+  color: white;
+  padding: 1rem 0;
+  z-index: 50;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds shadow */
+}
+
+/* Center the navbar heading */
+.navbar-heading {
+  font-size: 1.5rem; /* Adjust font size */
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 main {
   padding: 20px;
   display: flex;
