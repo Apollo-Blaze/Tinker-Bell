@@ -50,7 +50,7 @@ const ChatBot = () => {
       };
 
       // Start typing effect
-      const typingInterval = setInterval(typeMessage, 100);
+      const typingInterval = setInterval(typeMessage, 50);
 
       // Cleanup interval if component unmounts
       return () => clearInterval(typingInterval);
