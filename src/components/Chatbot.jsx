@@ -7,33 +7,39 @@ import "../App.css";
 const ChatBot = () => {
   const [input, setInput] = useState("");
   const [isBotResponding, setIsBotResponding] = useState(false);
-  const [typingMessage, setTypingMessage] = useState("");
   const [botMessage, setBotMessage] = useState("");
   const [listening, setListening] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(true);
-  const audioRef = useRef(new Audio("/christmas-music.mp3")); // Use relative path for public assets
+  const [isSpeaking, setIsSpeaking] = useState(false); // Track if Santa is speaking
+  const audioRef = useRef(new Audio("/christmas-music.mp3"));
 
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
   recognition.continuous = false;
   recognition.lang = "en-US";
 
-  // Load background music on component mount
   useEffect(() => {
-    audioRef.current.loop = true; // Set the music to loop
-    audioRef.current.volume = 0.5; // Adjust volume (0 = mute, 1 = full volume)
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.5;
 
-    // Start playing music initially
     audioRef.current.play().catch((error) => console.error("Music playback failed:", error));
+
+    const loadVoices = () => {
+      if (window.speechSynthesis.getVoices().length > 0) {
+        window.speechSynthesis.getVoices(); // Preload voices
+      }
+    };
+
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
   }, []);
 
-  // Toggle music between playing and muted
   const togglePlayPause = () => {
     if (isMusicPlaying) {
-      audioRef.current.pause(); // Pause music
+      audioRef.current.pause();
     } else {
-      audioRef.current.play().catch((error) => console.error("Music playback failed:", error)); // Play music
+      audioRef.current.play().catch((error) => console.error("Music playback failed:", error));
     }
-    setIsMusicPlaying(!isMusicPlaying); // Toggle music state
+    setIsMusicPlaying(!isMusicPlaying);
   };
 
   const startListening = () => {
@@ -59,7 +65,7 @@ const ChatBot = () => {
 
     setInput("");
     setIsBotResponding(true);
-    setTypingMessage("");
+    setBotMessage("");
 
     try {
       const response = await fetch("http://localhost:3000/chat", {
@@ -73,28 +79,8 @@ const ChatBot = () => {
       const data = await response.json();
       const botResponse = data.reply || "Santa is thinking hard...";
 
-      let currentIndex = 0;
-      const utterance = getSantaVoice();  // Get the old man voice here
-
-      // Typing and Speaking Simultaneously
-      const typingInterval = setInterval(() => {
-        if (currentIndex < botResponse.length) {
-          const currentText = botResponse.substring(0, currentIndex + 1);
-          setTypingMessage(currentText);
-
-          // Update speech text progressively
-          utterance.text = currentText;
-          window.speechSynthesis.cancel();
-          window.speechSynthesis.speak(utterance);
-
-          currentIndex++;
-        } else {
-          clearInterval(typingInterval);
-          setBotMessage(botResponse);
-          setTypingMessage("");
-          setIsBotResponding(false);
-        }
-      }, 50);
+      setBotMessage(botResponse);
+      playSantaVoice(botResponse); // Play Santa's voice with animation
     } catch (error) {
       console.error("Error:", error.message);
       setBotMessage("Oops! Santa is having trouble responding.");
@@ -104,30 +90,63 @@ const ChatBot = () => {
 
   const getSantaVoice = () => {
     const voices = window.speechSynthesis.getVoices();
-    
-    // Find a voice that matches the 'old man' description (low pitch, slow rate)
-    const oldManVoice = voices.find((voice) => voice.name.includes("Google UK English Male")) ||
-                        voices.find((voice) => voice.lang === "en-US") ||
-                        voices[0];
+    const oldManVoice =
+      voices.find((voice) => voice.name.includes("Google UK English Male")) ||
+      voices.find((voice) => voice.lang === "en-US") ||
+      voices[0];
 
-    // Adjust the voice properties for an 'old man' sound
     const utterance = new SpeechSynthesisUtterance();
-    utterance.voice = oldManVoice;  // Use the selected voice
-    utterance.rate = 0.99;  // Slow speech rate
-    utterance.pitch = 0.2;  // Lower pitch for an older voice
-    utterance.volume = 0.6;  // Slightly lower volume for a deeper voice
-
+    utterance.voice = oldManVoice;
+    utterance.rate = 0.99;
+    utterance.pitch = 0.2;
+    utterance.volume = 0.6;
     return utterance;
   };
 
-  useEffect(() => {
-    window.speechSynthesis.onvoiceschanged = () => {};
-  }, []);
+  const playSantaVoice = (text) => {
+    const maxChunkLength = 150;
+    const chunks = splitTextIntoChunks(text, maxChunkLength);
+
+    let currentChunkIndex = 0;
+    setIsSpeaking(true); // Santa starts speaking (animation to talking)
+
+    const speakChunk = () => {
+      if (currentChunkIndex < chunks.length) {
+        const utterance = getSantaVoice();
+        utterance.text = chunks[currentChunkIndex];
+
+        window.speechSynthesis.speak(utterance);
+
+        utterance.onend = () => {
+          currentChunkIndex++;
+          speakChunk(); // Speak the next chunk
+        };
+
+        utterance.onerror = (error) => {
+          console.error("Speech Synthesis Error:", error);
+          currentChunkIndex++;
+          speakChunk();
+        };
+      } else {
+        // All chunks spoken
+        setIsSpeaking(false); // Santa finishes speaking (animation to sleep)
+        setIsBotResponding(false);
+      }
+    };
+
+    window.speechSynthesis.cancel(); // Clear any ongoing speech
+    speakChunk();
+  };
+
+  const splitTextIntoChunks = (text, chunkSize) => {
+    const regex = new RegExp(`.{1,${chunkSize}}(\\s|$)`, "g");
+    return text.match(regex) || [text];
+  };
 
   const defaultOptions = {
     loop: true,
     autoplay: true,
-    animationData: isBotResponding ? talkingAnimation : sleepAnimation,
+    animationData: isSpeaking ? talkingAnimation : sleepAnimation,
     rendererSettings: { preserveAspectRatio: "xMidYMid slice" },
   };
 
@@ -138,7 +157,7 @@ const ChatBot = () => {
         onClick={togglePlayPause}
         className={`music-toggle ${!isMusicPlaying ? "muted" : ""}`}
       >
-        {isMusicPlaying ? "🎧" : "🔇"} {/* Music playing or muted icon */}
+        {isMusicPlaying ? "🎧" : "🔇"}
       </button>
 
       <div className="animation-container flex justify-center items-center">
@@ -146,9 +165,7 @@ const ChatBot = () => {
       </div>
 
       <div className="messages mb-2">
-        <div className="bot-message">
-          {isBotResponding ? typingMessage : botMessage}
-        </div>
+        <div className="bot-message">{botMessage}</div>
       </div>
 
       <div className="input-container flex flex-col justify-between items-center p-4 bg-yellow-500 rounded-2xl">
