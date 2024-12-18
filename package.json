@@ -10,9 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "lottie-react": "^2.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-icons": "^5.4.0",
     "react-lottie": "^1.2.10"
   },
   "devDependencies": {
@@ -29,5 +34,18 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
     "vite": "^6.0.1"
-  }
+  },
+  "description": "A chatbot application built with React, featuring dynamic responses powered by the Gemini API. The chatbot provides a seamless user experience with typing animations, smooth scrolling, and engaging Lottie animations.",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Apollo-Blaze/Tinker-Bell.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Apollo-Blaze/Tinker-Bell/issues"
+  },
+  "homepage": "https://github.com/Apollo-Blaze/Tinker-Bell#readme"
 }

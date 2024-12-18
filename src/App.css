@@ -11,9 +11,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -69,8 +71,6 @@ body {
   z-index: 1;
 }
 
-
-
 @keyframes shimmer {
   0% {
     transform: scale(1);
@@ -94,7 +94,6 @@ body {
     transform: translateX(-50%) translateY(-10px);
   }
 }
-
 
 h1 {
   font-size: 2.5rem;
@@ -272,3 +271,65 @@ button:hover {
     font-size: 0.9rem;
   }
 }
+
+/* Music Toggle Button */
+.music-toggle {
+  position: fixed;        /* Fix the button position */
+  bottom: 20px;           /* 20px from the bottom of the screen */
+  right: 20px;            /* 20px from the right of the screen */
+  background-color: #28a745; /* Green background color */
+  color: white;
+  padding: 10px 15px;
+  border-radius: 50%;      /* Circular button */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Optional shadow */
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 100;           /* Ensure it's above other content */
+  transition: background-color 0.2s ease, transform 0.2s ease-in-out;
+}
+
+.music-toggle:hover {
+  transform: scale(1.1);
+  background-color: #218838; /* Darker green on hover */
+}
+
+
+button, .ActionButton {
+  padding: 0.5rem 1rem;
+  color: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover, .ActionButton:hover {
+  background-color: #dc2626; /* Darker red on hover */
+  color:white;
+}
+
+.music-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #28a745; /* Green background color */
+  color: white;
+  padding: 10px 15px;
+  border-radius: 50%; /* Circular button */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Optional shadow */
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 100;
+  transition: background-color 0.2s ease, transform 0.2s ease-in-out;
+}
+
+.music-toggle:hover {
+  transform: scale(1.1);
+  background-color: #218838; /* Darker green on hover */
+}
+
+/* Optional style for mute icon */
+.music-toggle.muted {
+  background-color: #dc2626; /* Red color for mute */
+}
+
+/* Other existing styles remain unchanged */
